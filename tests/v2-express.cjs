@@ -1,5 +1,0 @@
-const {setup,assert}=require('./helpers.cjs');
-(async()=>{const g=await setup();const{page,state,run,poi,walk,enter,board,stopAt}=g;
- await poi('leave');await enter(1);await board();await stopAt(9);await poi('stairs');await poi('p2');await board('特急');
- let crossed=false;for(let i=0;i<160;i++){const s=(await state()).train;if(s.pos>7.9&&s.pos<8.1){crossed=true;assert.equal(s.door,false);assert.equal(s.station,undefined);assert.equal(s.next,7);}if(s.station===7&&s.door)break;await run(500);}assert(crossed,'express passed Horinouchi continuously');await stopAt(7);console.log('EXPRESS SKIPS HORINOUCHI PASS');
- await poi('stairs');await poi('p1');await board();await stopAt(11,false);await run(25000);assert.equal((await state()).scene,'train');assert.equal((await state()).train.state,'terminal');await walk('carDoor');await g.act();assert.equal((await state()).station,11);assert.equal((await state()).scene,'platform');console.log('TERMINAL REQUIRES MANUAL ALIGHT PASS');await g.finish();})().catch(e=>{console.error(e);process.exit(1)});

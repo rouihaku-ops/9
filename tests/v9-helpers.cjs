@@ -1,3 +1,0 @@
-const{setup,assert}=require('./helpers.cjs');
-async function setup9(mobile=false){const h=await setup(mobile);h.mainBoard=async(kind='local')=>{await h.walk('mainTrain');for(let i=0;i<1600;i++){const s=await h.state();if(s.main.departures.some(d=>d.service===kind&&d.door&&d.stop)){await h.act();assert.equal((await h.state()).scene,'keioCar');return;}await h.run(500);}throw Error('no '+kind);};h.mainStop=async(st)=>{await h.walk('mainDoor');for(let i=0;i<2400;i++){const s=await h.state();if(s.main.ride?.station===st&&s.main.ride.door){await h.act();assert.equal((await h.state()).main.station,st);assert.equal((await h.state()).scene,'keioPlatform');return;}await h.run(500);}throw Error('never arrived '+st);};return h;}
-module.exports={setup9,assert};
