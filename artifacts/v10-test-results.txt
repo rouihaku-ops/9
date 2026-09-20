@@ -1,0 +1,9 @@
+Version 10 validation — 2026-09-20
+PASS v10-life desktop + mobile: 11 products, wallet debit, unpack, cook, eat, climb, slide, return, reload
+PASS v10-rail: home-Minami-gacha-home, IC fares, rewards, 2x/4x, same train Horinouchi-Chofu-Shinjuku; Takao/Hachioji direct roundtrips
+PASS v10-systems: 36 service samples, branch topology and stop patterns, liner tickets, peak seats, zoo paid connection, mobile speed controls
+PASS v9-migration: old collection migration exactly once
+PASS v10-food-save: queued cooking survives reload; insufficient funds
+PASS v10-table-control: purchased meals and father dinner
+PASS v10-final-visual: full table and animated slide screenshots
+PASS JavaScript syntax and browser page-error checks
