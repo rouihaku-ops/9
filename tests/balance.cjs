@@ -1,0 +1,12 @@
+const {chromium}=require('/Users/ri/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const assert=require('node:assert/strict');
+(async()=>{
+ const browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});const page=await browser.newPage({viewport:{width:390,height:844},hasTouch:true});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(()=>localStorage.setItem('tokyo-little-rail-v1',JSON.stringify({version:1,profile:{ic:0,coins:0}})));
+ await page.clock.install();await page.goto('file:///Users/ri/Desktop/dianche/index.html');await page.locator('#start').click();
+ const state=()=>page.evaluate(()=>gameDebug.state);const run=ms=>page.clock.runFor(ms);
+ // Hold the actual touch direction control, then release it.
+ const before=(await state()).player;await page.locator('[data-key="ArrowRight"]').dispatchEvent('pointerdown',{pointerId:1,pointerType:'touch'});await run(400);await page.locator('[data-key="ArrowRight"]').dispatchEvent('pointerup',{pointerId:1,pointerType:'touch'});assert((await state()).player.x>before.x+30);console.log('TOUCH MOVEMENT PASS');
+ async function poi(id,act=true){await page.locator('#mapBtn').click();await page.locator(`[data-walk="${id}"]`).click();for(let i=0;i<18;i++){await run(1000);if(!(await state()).pathLength)break;}assert.equal((await state()).near,id);if(act){await page.locator('#action').click();await run(1300);}}
+ await poi('leave');await poi('station');await poi('gate');assert.equal((await state()).paid,false);assert.equal((await state()).profile.ic,0);await poi('charge');assert.equal((await state()).profile.ic,0);await poi('staff');await page.locator('[data-do="aid"]').click();assert.equal((await state()).profile.coins,500);await poi('charge');assert.equal((await state()).profile.ic,300);assert.equal((await state()).profile.coins,200);await poi('gate');assert.equal((await state()).paid,true);await poi('gate');assert.equal((await state()).paid,false);assert.equal((await state()).profile.ic,300);await poi('stamp');assert((await state()).profile.stamps.includes('hori'));await page.screenshot({path:'artifacts/mobile-concourse.png'});assert.deepEqual(errors,[]);console.log('INSUFFICIENT BALANCE, AID, CHARGE, SAME-STATION EXIT, STAMP PASS');await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});
